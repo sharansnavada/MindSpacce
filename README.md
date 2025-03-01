@@ -1,6 +1,9 @@
 # MindSpacce
 This project involves in uploding the text, photos, videos and files locally and could be retrived.
 
+======================================================================================
+======================================================================================
+
 Step 1: Install Node.js
 Download Node.js:
 
@@ -16,6 +19,9 @@ Run in terminal:
 node -v  # Should show Node.js version (e.g., v18.x.x)
 npm -v   # Should show npm version (e.g., 9.x.x)
 
+======================================================================================
+======================================================================================
+
 Step 2: Create the Project Folder
 Create a folder for your project, e.g., thought-post-website.
 
@@ -25,5 +31,15 @@ server.js (backend code)
 
 public/index.html (frontend code)
 
-public/styles.css (styles)
+======================================================================================
+======================================================================================
+
+Step 3: start the server
+
+Run the backend in terminal of your project path:
+
+node server.js
+
+Open your browser and go to:
+http://localhost:3000
 
