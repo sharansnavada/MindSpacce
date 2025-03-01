@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thought Post</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Username Prompt (shown only once) -->
+  <div id="username-prompt" class="modal">
+    <div class="modal-content">
+      <h2>Welcome to Thought Post!</h2>
+      <p>Please enter your name to get started:</p>
+      <input type="text" id="username-input" placeholder="Your name" required>
+      <button id="submit-username">Submit</button>
+    </div>
+  </div>
+
+  <!-- Main Content (shown after username is entered) -->
+  <div id="main-content" class="hidden">
+    <!-- Theme Toggle Button (Emoji Only) -->
+    <button id="theme-toggle" class="theme-toggle">🌙</button>
+
+    <!-- Homepage Content -->
+    <header>
+      <h1 id="greeting"></h1>
+      <p id="current-time"></p>
+    </header>
+
+    <!-- Buttons for Actions -->
+    <div class="buttons-container">
+      <button id="express-feeling" class="action-button">Express Your Feeling</button>
+      <button id="view-posts" class="action-button">View My Posts</button>
+    </div>
+
+    <!-- Post Form (hidden by default) -->
+    <div id="post-form-container" class="hidden">
+      <form id="post-form" enctype="multipart/form-data">
+        <textarea id="post-input" placeholder="What's on your mind?" required></textarea>
+        <!-- Emoji File Upload Button -->
+        <label for="file-input" class="emoji-file-upload">
+          📁
+        </label>
+        <input type="file" id="file-input" accept="image/*, video/*, .pdf, .doc, .docx" multiple>
+        <button type="submit" id="post-button">Post</button>
+      </form>
+    </div>
+
+    <!-- Posts Section (hidden by default) -->
+    <div id="posts" class="hidden">
+      <h2>Your Thoughts</h2>
+    </div>
+  </div>
+
+  <script>
+    // Username Prompt
+    const usernamePrompt = document.getElementById('username-prompt');
+    const usernameInput = document.getElementById('username-input');
+    const submitUsernameButton = document.getElementById('submit-username');
+    const mainContent = document.getElementById('main-content');
+    const greeting = document.getElementById('greeting');
+    const currentTime = document.getElementById('current-time');
+
+    // Check if username is already stored
+    let username = localStorage.getItem('username');
+    if (username) {
+      usernamePrompt.style.display = 'none';
+      mainContent.classList.remove('hidden');
+      showGreeting(username);
+    }
+
+    // Submit Username
+    submitUsernameButton.addEventListener('click', () => {
+      username = usernameInput.value.trim();
+      if (username) {
+        localStorage.setItem('username', username);
+        usernamePrompt.style.display = 'none';
+        mainContent.classList.remove('hidden');
+        showGreeting(username);
+      }
+    });
+
+    // Show Greeting and Current Time
+    function showGreeting(username) {
+      greeting.textContent = `Hi, ${username}!`;
+      updateTime();
+      setInterval(updateTime, 1000); // Update time every second
+    }
+
+    function updateTime() {
+      const now = new Date();
+      currentTime.textContent = now.toLocaleString();
+    }
+
+    // Buttons for Actions
+    const expressFeelingButton = document.getElementById('express-feeling');
+    const viewPostsButton = document.getElementById('view-posts');
+    const postFormContainer = document.getElementById('post-form-container');
+    const postsContainer = document.getElementById('posts');
+
+    expressFeelingButton.addEventListener('click', () => {
+      postFormContainer.classList.remove('hidden');
+      postsContainer.classList.add('hidden');
+    });
+
+    viewPostsButton.addEventListener('click', async () => {
+      postsContainer.classList.remove('hidden');
+      postFormContainer.classList.add('hidden');
+      await fetchPosts();
+    });
+
+    // Fetch and Display Posts
+    async function fetchPosts() {
+      const response = await fetch('/api/posts');
+      const posts = await response.json();
+      postsContainer.innerHTML = `
+        <h2>Your Thoughts</h2>
+        ${posts
+          .map(
+            (post) => `
+              <div class="post" data-id="${post.id}">
+                ${post.files
+                  .map(
+                    (file) => `
+                      ${file.endsWith('.mp4') || file.endsWith('.webm') || file.endsWith('.ogg')
+                        ? `<video controls src="${file}" class="post-media"></video>`
+                        : file.endsWith('.jpg') || file.endsWith('.jpeg') || file.endsWith('.png') || file.endsWith('.gif')
+                        ? `<img src="${file}" alt="Post Image" class="post-media">`
+                        : `<a href="${file}" target="_blank" class="post-file">Download File</a>`
+                      }
+                    `
+                  )
+                  .join('')}
+                <p>${post.text}</p>
+                <small>${new Date(post.timestamp).toLocaleString()}</small>
+                <div class="post-actions">
+                  <button class="edit-post">✏️ Edit</button>
+                  <button class="delete-post">🗑️ Delete</button>
+                </div>
+              </div>
+            `
+          )
+          .join('')}
+      `;
+
+      // Add event listeners for edit and delete buttons
+      document.querySelectorAll('.edit-post').forEach(button => {
+        button.addEventListener('click', handleEditPost);
+      });
+      document.querySelectorAll('.delete-post').forEach(button => {
+        button.addEventListener('click', handleDeletePost);
+      });
+    }
+
+    // Handle Edit Post
+    async function handleEditPost(e) {
+      const postElement = e.target.closest('.post');
+      const postId = parseInt(postElement.getAttribute('data-id'));
+      const postText = postElement.querySelector('p').textContent;
+
+      const updatedText = prompt('Edit your post:', postText);
+      if (updatedText !== null && updatedText.trim() !== '') {
+        const response = await fetch(`/api/posts/${postId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text: updatedText }),
+        });
+        if (response.ok) {
+          fetchPosts();
+        }
+      }
+    }
+
+    // Handle Delete Post
+    async function handleDeletePost(e) {
+      const postElement = e.target.closest('.post');
+      const postId = parseInt(postElement.getAttribute('data-id'));
+
+      if (confirm('Are you sure you want to delete this post?')) {
+        const response = await fetch(`/api/posts/${postId}`, {
+          method: 'DELETE',
+        });
+        if (response.ok) {
+          fetchPosts();
+        }
+      }
+    }
+
+    // Add a New Post
+    document.getElementById('post-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const input = document.getElementById('post-input');
+      const fileInput = document.getElementById('file-input');
+      const text = input.value.trim();
+      const files = fileInput.files;
+
+      if (text || files.length > 0) {
+        const formData = new FormData();
+        formData.append('text', text);
+        for (let i = 0; i < files.length; i++) {
+          formData.append('files', files[i]);
+        }
+
+        const response = await fetch('/api/posts', {
+          method: 'POST',
+          body: formData,
+        });
+        const newPost = await response.json();
+        input.value = '';
+        fileInput.value = '';
+        fetchPosts();
+      }
+    });
+
+    // Dark Mode / Light Mode Toggle
+    const themeToggle = document.getElementById('theme-toggle');
+    const body = document.body;
+
+    // Check for saved theme in localStorage
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+      body.classList.add(savedTheme);
+      updateToggleEmoji(savedTheme);
+    }
+
+    // Toggle Theme
+    themeToggle.addEventListener('click', () => {
+      body.classList.toggle('dark-mode');
+      const isDarkMode = body.classList.contains('dark-mode');
+      localStorage.setItem('theme', isDarkMode ? 'dark-mode' : '');
+      updateToggleEmoji(isDarkMode ? 'dark-mode' : '');
+    });
+
+    // Update Toggle Emoji
+    function updateToggleEmoji(theme) {
+      if (theme === 'dark-mode') {
+        themeToggle.textContent = '☀️'; // Sun emoji for light mode
+      } else {
+        themeToggle.textContent = '🌙'; // Moon emoji for dark mode
+      }
+    }
+  </script>
+</body>
+</html>

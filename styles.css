@@ -1,0 +1,252 @@
+/* General Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Body Styling */
+body {
+  font-family: 'Roboto', sans-serif;
+  background-color: #f0f2f5;
+  color: #333;
+  line-height: 1.6;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Dark Mode */
+body.dark-mode {
+  background-color: #121212;
+  color: #ffffff;
+}
+
+body.dark-mode .modal-content {
+  background-color: #1e1e1e;
+  color: #ffffff;
+}
+
+body.dark-mode .post {
+  background-color: #1e1e1e;
+  border-color: #333;
+}
+
+body.dark-mode .post p {
+  color: #ffffff;
+}
+
+body.dark-mode .post small {
+  color: #bbb;
+}
+
+/* Modal Styling */
+.modal {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.modal-content input {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  font-size: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.modal-content button {
+  padding: 10px 20px;
+  font-size: 1rem;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.modal-content button:hover {
+  background-color: #0056b3;
+}
+
+/* Main Content */
+.hidden {
+  display: none;
+}
+
+/* Header */
+header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+header h1 {
+  font-size: 3rem;
+  color: #007bff;
+  margin-bottom: 10px;
+}
+
+header p {
+  font-size: 1.2rem;
+  color: #666;
+}
+
+/* Buttons Container */
+.buttons-container {
+  display: flex;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.action-button {
+  padding: 15px 30px;
+  font-size: 1.1rem;
+  background-color: #28a745;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.action-button:hover {
+  background-color: #218838;
+}
+
+/* Emoji File Upload Button */
+.emoji-file-upload {
+  display: inline-block;
+  font-size: 1.5rem;
+  cursor: pointer;
+  margin-bottom: 10px;
+  transition: transform 0.3s ease;
+}
+
+.emoji-file-upload:hover {
+  transform: scale(1.2);
+}
+
+/* Hide the default file input */
+#file-input {
+  display: none;
+}
+
+/* Post Form */
+#post-form-container {
+  margin-top: 20px;
+  width: 100%;
+  max-width: 600px;
+}
+
+#post-form textarea {
+  width: 100%;
+  height: 150px;
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  resize: vertical;
+  margin-bottom: 10px;
+}
+
+#post-form button {
+  width: 100%;
+  padding: 10px;
+  font-size: 1rem;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+#post-form button:hover {
+  background-color: #0056b3;
+}
+
+/* Posts Section */
+#posts {
+  margin-top: 20px;
+  width: 100%;
+  max-width: 600px;
+}
+
+.post {
+  background-color: #f9f9f9;
+  padding: 15px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  border: 1px solid #eee;
+}
+
+.post p {
+  font-size: 1rem;
+  color: #333;
+  margin-bottom: 5px;
+}
+
+.post small {
+  font-size: 0.9rem;
+  color: #888;
+}
+
+/* Post Media */
+.post-media {
+  max-width: 100%;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+
+/* Post File Link */
+.post-file {
+  display: block;
+  margin-bottom: 10px;
+  color: #007bff;
+  text-decoration: none;
+}
+
+.post-file:hover {
+  text-decoration: underline;
+}
+
+/* Post Actions */
+.post-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.post-actions button {
+  padding: 5px 10px;
+  font-size: 0.9rem;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.post-actions button:hover {
+  background-color: #0056b3;
+}
