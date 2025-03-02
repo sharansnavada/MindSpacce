@@ -30,6 +30,10 @@ Inside the folder, create the following files:
 server.js (backend code)
 
 public/index.html (frontend code)
+public/styles.css (styling)
+public/scripts.js (frontend functionality)
+public/view-post.html (frontend for viewing the code)
+public/view-post.js (frontend functionality for viewing the post)
 
 ======================================================================================
 ======================================================================================
