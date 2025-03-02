@@ -12,13 +12,13 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // Serve static files (HTML, CSS, JS, and uploaded files)
-app.use(express.static('public'));
-app.use('/uploads', express.static('uploads'));
+app.use(express.static(path.join(__dirname, 'public')));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Configure multer for file uploads
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    const uploadDir = 'uploads';
+    const uploadDir = path.join(__dirname, 'uploads');
     if (!fs.existsSync(uploadDir)) {
       fs.mkdirSync(uploadDir);
     }
@@ -55,10 +55,11 @@ app.get('/api/posts', (req, res) => {
 });
 
 // API to create a new post with files
-app.post('/api/posts', upload.array('files', 5), (req, res) => {
+app.post('/api/posts', upload.array('files', 10), (req, res) => {
   const posts = getPosts();
   const newPost = {
     id: Date.now(),
+    title: req.body.title, // Add title field
     text: req.body.text,
     files: req.files ? req.files.map(file => `/uploads/${file.filename}`) : [],
     timestamp: new Date().toISOString(),
@@ -72,10 +73,12 @@ app.post('/api/posts', upload.array('files', 5), (req, res) => {
 app.put('/api/posts/:id', (req, res) => {
   const posts = getPosts();
   const postId = parseInt(req.params.id);
+  const updatedTitle = req.body.title;
   const updatedText = req.body.text;
 
   const postIndex = posts.findIndex(post => post.id === postId);
   if (postIndex !== -1) {
+    posts[postIndex].title = updatedTitle;
     posts[postIndex].text = updatedText;
     posts[postIndex].timestamp = new Date().toISOString(); // Update timestamp
     savePosts(posts);
