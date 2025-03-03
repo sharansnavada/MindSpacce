@@ -712,3 +712,11 @@ body.dark-mode .post-file {
 body.dark-mode .post-file:hover {
   background-color: #444;
 }
+
+/* Highlighted text */
+.highlight {
+  background-color: yellow; /* Highlight color */
+  color: black; /* Text color */
+  padding: 2px 4px; /* Add some padding */
+  border-radius: 3px; /* Rounded corners */
+}
