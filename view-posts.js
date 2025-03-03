@@ -19,40 +19,40 @@ async function fetchPosts() {
     const postsContainer = document.getElementById('posts');
 
     postsContainer.innerHTML = `
-      <div class="posts-grid">
-        ${posts
-          .map(
-            (post) => `
-              <div class="post ${isCompactView ? 'compact' : 'expanded'}" data-id="${post.id}">
-                <h3>${post.title}</h3>
-                <div class="post-content">
-                  <p>${post.text}</p>
-                  <small>${new Date(post.timestamp).toLocaleString()}</small>
-                  <div class="media-grid">
-                    ${post.files
-                      .map(
-                        (file) => `
-                          ${file.endsWith('.mp4') || file.endsWith('.webm') || file.endsWith('.ogg')
-                            ? `<video controls src="${file}" class="post-media"></video>`
-                            : file.endsWith('.jpg') || file.endsWith('.jpeg') || file.endsWith('.png') || file.endsWith('.gif')
-                            ? `<img src="${file}" alt="Post Image" class="post-media" onclick="openFullScreenMedia('${file}')">`
-                            : `<a href="${file}" target="_blank" class="post-file">📄 ${file.split('/').pop()}</a>`
-                          }
-                        `
-                      )
-                      .join('')}
-                  </div>
-                  <div class="post-actions">
-                    <button class="edit-post" onclick="handleEditPost(${post.id})">✏️ Edit</button>
-                    <button class="delete-post" onclick="handleDeletePost(${post.id})">🗑️ Delete</button>
-                  </div>
-                </div>
+  <div class="posts-grid">
+    ${posts
+      .map(
+        (post) => `
+          <div class="post ${isCompactView ? 'compact' : 'expanded'}" data-id="${post.id}">
+            <h3>${post.title}</h3>
+            <div class="post-content">
+              <p>${post.text}</p>
+              <small>${new Date(post.timestamp).toLocaleString()}</small>
+              <div class="media-grid">
+                ${post.files
+                  .map(
+                    (file) => `
+                      ${file.endsWith('.mp4') || file.endsWith('.webm') || file.endsWith('.ogg')
+                        ? `<video controls src="${file}" class="post-media"></video>`
+                        : file.endsWith('.jpg') || file.endsWith('.jpeg') || file.endsWith('.png') || file.endsWith('.gif')
+                        ? `<img src="${file}" alt="Post Image" class="post-media" onclick="openFullScreenMedia('${file}')">`
+                        : `<a href="${file}" target="_blank" class="post-file" title="${file.split('/').pop()}">📄 ${file.split('/').pop()}</a>`
+                      }
+                    `
+                  )
+                  .join('')}
               </div>
-            `
-          )
-          .join('')}
-      </div>
-    `;
+              <div class="post-actions">
+                <button class="edit-post" onclick="handleEditPost(${post.id})">✏️ Edit</button>
+                <button class="delete-post" onclick="handleDeletePost(${post.id})">🗑️ Delete</button>
+              </div>
+            </div>
+          </div>
+        `
+      )
+      .join('')}
+  </div>
+`;
 
     // Add click event listeners for compact view posts
     if (isCompactView) {
