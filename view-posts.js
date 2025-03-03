@@ -45,6 +45,7 @@ async function fetchPosts() {
               <div class="post-actions">
                 <button class="edit-post" onclick="handleEditPost(${post.id})">✏️ Edit</button>
                 <button class="delete-post" onclick="handleDeletePost(${post.id})">🗑️ Delete</button>
+                <button class="highlight-post" onclick="highlightText(${post.id})">🖍️ Highlight</button>
               </div>
             </div>
           </div>
@@ -130,3 +131,39 @@ async function handleDeletePost(postId) {
 
 // Fetch posts when the page loads
 fetchPosts();
+
+async function highlightText(postId) {
+  const postElement = document.querySelector(`.post[data-id="${postId}"]`);
+  const postContent = postElement.querySelector('.post-content p');
+
+  // Get the selected text
+  const selection = window.getSelection();
+  const selectedText = selection.toString();
+
+  if (selectedText) {
+    // Wrap the selected text in a span with a highlight class
+    const range = selection.getRangeAt(0);
+    const span = document.createElement('span');
+    span.className = 'highlight';
+    span.textContent = selectedText;
+    range.deleteContents();
+    range.insertNode(span);
+
+    // Clear the selection
+    selection.removeAllRanges();
+
+    // Update the post content in the database
+    const updatedText = postContent.innerHTML;
+    const response = await fetch(`/api/posts/${postId}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text: updatedText }),
+    });
+
+    if (!response.ok) {
+      alert('Failed to save highlighted text.');
+    }
+  } else {
+    alert('Please select some text to highlight.');
+  }
+}
