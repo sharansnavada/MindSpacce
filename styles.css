@@ -661,3 +661,28 @@ body.dark-mode .toggle-view:hover {
 .full-screen-media .close-full-screen:active {
   transform: scale(0.9);
 }
+
+/* Ensure filenames don't overflow */
+.post-file {
+  display: inline-block;
+  max-width: 100%; /* Ensure it doesn't exceed the container width */
+  white-space: nowrap; /* Prevent text from wrapping */
+  overflow: hidden; /* Hide overflow */
+  text-overflow: ellipsis; /* Show ellipsis (...) for overflow */
+  padding: 5px;
+  background-color: #f1f1f1;
+  border-radius: 5px;
+  text-decoration: none;
+  color: #007bff;
+  font-size: 0.9rem;
+}
+
+/* Dark mode styles for filenames */
+body.dark-mode .post-file {
+  background-color: #333;
+  color: #007bff;
+}
+
+body.dark-mode .post-file:hover {
+  background-color: #444;
+}
