@@ -683,6 +683,32 @@ body.dark-mode .post-file {
   color: #007bff;
 }
 
+/* Ensure post content is left-aligned */
+.post {
+  text-align: left; /* Left-align all text inside the post */
+}
+
+.post h3 {
+  text-align: left; /* Left-align the post title */
+  margin-bottom: 10px; /* Add some spacing below the title */
+}
+
+.post p {
+  text-align: left; /* Left-align the post text */
+  margin-bottom: 10px; /* Add some spacing below the text */
+}
+
+.post small {
+  text-align: left; /* Left-align the timestamp */
+  display: block; /* Ensure it takes full width */
+  margin-bottom: 15px; /* Add some spacing below the timestamp */
+}
+
+/* Media grid alignment */
+.media-grid {
+  text-align: left; /* Left-align media grid content */
+}
+
 body.dark-mode .post-file:hover {
   background-color: #444;
 }
