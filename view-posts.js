@@ -135,6 +135,7 @@ fetchPosts();
 async function highlightText(postId) {
   const postElement = document.querySelector(`.post[data-id="${postId}"]`);
   const postContent = postElement.querySelector('.post-content p');
+  const postTitle = postElement.querySelector('h3').textContent; // Get the post title
 
   // Get the selected text
   const selection = window.getSelection();
@@ -157,7 +158,10 @@ async function highlightText(postId) {
     const response = await fetch(`/api/posts/${postId}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text: updatedText }),
+      body: JSON.stringify({
+        title: postTitle, // Include the title
+        text: updatedText // Include the updated text with highlights
+      }),
     });
 
     if (!response.ok) {
@@ -166,4 +170,46 @@ async function highlightText(postId) {
   } else {
     alert('Please select some text to highlight.');
   }
+}
+
+let postIdToDelete = null; // Store the post ID to delete
+
+// Show the confirmation modal
+function showConfirmationModal(postId) {
+  postIdToDelete = postId;
+  const modal = document.getElementById('confirmation-modal');
+  modal.classList.remove('hidden');
+}
+
+// Hide the confirmation modal
+function hideConfirmationModal() {
+  const modal = document.getElementById('confirmation-modal');
+  modal.classList.add('hidden');
+}
+
+// Handle delete confirmation
+document.getElementById('confirm-delete').addEventListener('click', async () => {
+  if (postIdToDelete) {
+    const response = await fetch(`/api/posts/${postIdToDelete}`, {
+      method: 'DELETE',
+    });
+
+    if (response.ok) {
+      fetchPosts(); // Refresh the posts after deletion
+    } else {
+      alert('Failed to delete the post. Please try again later.');
+    }
+
+    hideConfirmationModal(); // Hide the modal after deletion
+  }
+});
+
+// Handle delete cancellation
+document.getElementById('cancel-delete').addEventListener('click', () => {
+  hideConfirmationModal(); // Hide the modal
+});
+
+// Updated handleDeletePost function
+function handleDeletePost(postId) {
+  showConfirmationModal(postId); // Show the confirmation modal
 }
