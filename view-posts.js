@@ -213,3 +213,79 @@ document.getElementById('cancel-delete').addEventListener('click', () => {
 function handleDeletePost(postId) {
   showConfirmationModal(postId); // Show the confirmation modal
 }
+
+// Function to arrange posts in a masonry layout
+function arrangePostsMasonry() {
+  const postsGrid = document.querySelector('.posts-grid');
+  const posts = document.querySelectorAll('.post');
+
+  // Reset the grid layout
+  postsGrid.style.gridAutoRows = 'auto'; // Allow rows to adjust height
+  postsGrid.style.alignItems = 'start'; // Align items to the top
+
+  // Dynamically adjust the height of each post
+  posts.forEach(post => {
+    post.style.gridRowEnd = `span ${Math.ceil(post.clientHeight / 20)}`; // Adjust row span based on height
+  });
+}
+
+// Call the masonry layout function after rendering posts
+async function fetchPosts() {
+  try {
+    const response = await fetch('/api/posts');
+    if (!response.ok) {
+      throw new Error('Failed to fetch posts');
+    }
+    const posts = await response.json();
+    const postsContainer = document.getElementById('posts');
+
+    postsContainer.innerHTML = `
+      <div class="posts-grid">
+        ${posts
+          .map(
+            (post) => `
+              <div class="post" data-id="${post.id}">
+                <h3>${post.title}</h3>
+                <div class="post-content">
+                  <p>${post.text}</p>
+                  <small>${new Date(post.timestamp).toLocaleString()}</small>
+                  <div class="media-grid">
+                    ${post.files
+                      .map(
+                        (file) => `
+                          ${file.endsWith('.mp4') || file.endsWith('.webm') || file.endsWith('.ogg')
+                            ? `<video controls src="${file}" class="post-media"></video>`
+                            : file.endsWith('.jpg') || file.endsWith('.jpeg') || file.endsWith('.png') || file.endsWith('.gif')
+                            ? `<img src="${file}" alt="Post Image" class="post-media" onclick="openFullScreenMedia('${file}')">`
+                            : `<a href="${file}" target="_blank" class="post-file" title="${file.split('/').pop()}">📄 ${file.split('/').pop()}</a>`
+                          }
+                        `
+                      )
+                      .join('')}
+                  </div>
+                  <div class="post-actions">
+                    <button class="edit-post" onclick="handleEditPost(${post.id})">✏️ Edit</button>
+                    <button class="delete-post" onclick="handleDeletePost(${post.id})">🗑️ Delete</button>
+                    <button class="highlight-post" onclick="highlightText(${post.id})">🖍️ Highlight</button>
+                  </div>
+                </div>
+              </div>
+            `
+          )
+          .join('')}
+      </div>
+    `;
+
+    // Arrange posts in a masonry layout
+    arrangePostsMasonry();
+  } catch (error) {
+    console.error('Error fetching posts:', error);
+    alert('Failed to fetch posts. Please try again later.');
+  }
+}
+
+// Call fetchPosts when the page loads
+fetchPosts();
+
+// Re-arrange posts on window resize
+window.addEventListener('resize', arrangePostsMasonry);
