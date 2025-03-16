@@ -939,3 +939,8 @@ body.dark-mode .post-file:hover {
 .post.compact.expanded .post-content {
   display: block; /* Show content in expanded view */
 }
+
+.post-content p {
+  white-space: pre-line; /* Preserve line breaks */
+  margin-bottom: 10px; /* Add spacing between paragraphs */
+}
