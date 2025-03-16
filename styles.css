@@ -804,6 +804,7 @@ body.dark-mode .post-file:hover {
   outline: none;
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
+
 /* Masonry Layout */
 .posts-grid {
   display: grid;
@@ -880,4 +881,61 @@ body.dark-mode .post-file:hover {
 
 .post .post-actions button:hover {
   background-color: #0056b3;
+}
+
+/* Grid View Styles */
+.posts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Adjust column width as needed */
+  gap: 20px; /* Space between posts */
+  align-items: start; /* Align items to the top */
+}
+
+.post {
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer; /* Make the post clickable */
+  display: flex;
+  flex-direction: column;
+}
+
+.post.compact {
+  padding: 10px;
+  cursor: pointer;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  text-align: center; /* Center-align the title */
+  height: auto; /* Allow compact view posts to adjust height */
+}
+
+.post.compact h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  color: #007bff;
+}
+
+.post.compact .post-content {
+  display: none; /* Hide content in compact view */
+}
+
+.post.compact.expanded {
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  text-align: left; /* Left-align content in expanded view */
+}
+
+.post.compact.expanded h3 {
+  margin: 0 0 10px 0;
+  font-size: 1.5rem;
+  color: #007bff;
+}
+
+.post.compact.expanded .post-content {
+  display: block; /* Show content in expanded view */
 }
