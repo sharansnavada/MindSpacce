@@ -8,6 +8,11 @@ document.getElementById('toggle-view').addEventListener('click', () => {
   fetchPosts(); // Re-render posts in the new view mode
 });
 
+// Function to replace line breaks with <br> tags
+function formatPostContent(text) {
+  return text.replace(/\n/g, '<br>'); // Replace all \n with <br>
+}
+
 // Fetch and display posts
 async function fetchPosts() {
   try {
@@ -28,7 +33,7 @@ async function fetchPosts() {
               <div class="post compact" data-id="${post.id}">
                 <h3>${post.title}</h3>
                 <div class="post-content">
-                  <p>${post.text}</p>
+                  <p>${formatPostContent(post.text)}</p> <!-- Format post content -->
                   <small>${new Date(post.timestamp).toLocaleString()}</small>
                   <div class="media-grid">
                     ${post.files
@@ -72,7 +77,7 @@ async function fetchPosts() {
                 <div class="post" data-id="${post.id}">
                   <h3>${post.title}</h3>
                   <div class="post-content">
-                    <p>${post.text}</p>
+                    <p>${formatPostContent(post.text)}</p> <!-- Format post content -->
                     <small>${new Date(post.timestamp).toLocaleString()}</small>
                     <div class="media-grid">
                       ${post.files
