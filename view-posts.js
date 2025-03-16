@@ -68,7 +68,7 @@ async function fetchPosts() {
               <div class="post compact" data-id="${post.id}">
                 <h3>${post.title}</h3>
                 <div class="post-content">
-                  <p>${formatPostContent(post.text)}</p> <!-- Format post content -->
+                  <p>${formatPostContent(post.text)}</p>
                   <small>${new Date(post.timestamp).toLocaleString()}</small>
                   <div class="media-grid">
                     ${post.files
@@ -77,7 +77,7 @@ async function fetchPosts() {
                           ${file.endsWith('.mp4') || file.endsWith('.webm') || file.endsWith('.ogg')
                             ? `<video controls src="${file}" class="post-media"></video>`
                             : file.endsWith('.jpg') || file.endsWith('.jpeg') || file.endsWith('.png') || file.endsWith('.gif')
-                            ? `<img src="${file}" alt="Post Image" class="post-media" onclick="openFullScreenMedia('${file}')">`
+                            ? `<img src="${file}" alt="Post Image" class="post-media" data-file="${file}">`
                             : `<a href="${file}" target="_blank" class="post-file" title="${file.split('/').pop()}">📄 ${file.split('/').pop()}</a>`
                           }
                         `
@@ -99,7 +99,7 @@ async function fetchPosts() {
       // Add click event listeners for compact view posts
       document.querySelectorAll('.post.compact').forEach(post => {
         post.addEventListener('click', () => {
-          post.classList.toggle('expanded'); // Toggle expanded view
+          post.classList.toggle('expanded');
         });
       });
     } else {
@@ -112,7 +112,7 @@ async function fetchPosts() {
                 <div class="post" data-id="${post.id}">
                   <h3>${post.title}</h3>
                   <div class="post-content">
-                    <p>${formatPostContent(post.text)}</p> <!-- Format post content -->
+                    <p>${formatPostContent(post.text)}</p>
                     <small>${new Date(post.timestamp).toLocaleString()}</small>
                     <div class="media-grid">
                       ${post.files
@@ -121,7 +121,7 @@ async function fetchPosts() {
                             ${file.endsWith('.mp4') || file.endsWith('.webm') || file.endsWith('.ogg')
                               ? `<video controls src="${file}" class="post-media"></video>`
                               : file.endsWith('.jpg') || file.endsWith('.jpeg') || file.endsWith('.png') || file.endsWith('.gif')
-                              ? `<img src="${file}" alt="Post Image" class="post-media" onclick="openFullScreenMedia('${file}')">`
+                              ? `<img src="${file}" alt="Post Image" class="post-media" data-file="${file}">`
                               : `<a href="${file}" target="_blank" class="post-file" title="${file.split('/').pop()}">📄 ${file.split('/').pop()}</a>`
                             }
                           `
@@ -144,6 +144,14 @@ async function fetchPosts() {
       // Arrange posts in a masonry layout for grid view
       arrangePostsMasonry();
     }
+
+    // Reattach event listeners for photos
+    document.querySelectorAll('.post-media').forEach(media => {
+      media.addEventListener('click', () => {
+        const fileUrl = media.getAttribute('data-file') || media.src;
+        openFullScreenMedia(fileUrl);
+      });
+    });
   } catch (error) {
     console.error('Error fetching posts:', error);
     alert('Failed to fetch posts. Please try again later.');
@@ -166,11 +174,12 @@ function arrangePostsMasonry() {
 }
 
 // Open Media in Full Screen
+// Open Media in Full Screen
 function openFullScreenMedia(fileUrl) {
   const fullScreenContainer = document.createElement('div');
   fullScreenContainer.classList.add('full-screen-media');
 
-  const mediaElement = fileUrl.endsWith('.mp4') || file.endsWith('.webm') || file.endsWith('.ogg')
+  const mediaElement = fileUrl.endsWith('.mp4') || fileUrl.endsWith('.webm') || fileUrl.endsWith('.ogg')
     ? `<video controls src="${fileUrl}" class="full-screen-content"></video>`
     : `<img src="${fileUrl}" alt="Full Screen Media" class="full-screen-content">`;
 
@@ -192,45 +201,31 @@ function closeFullScreenMedia() {
   }
 }
 
+// Close Full Screen Media
+function closeFullScreenMedia() {
+  const fullScreenContainer = document.querySelector('.full-screen-media');
+  if (fullScreenContainer) {
+    fullScreenContainer.remove();
+  }
+}
+
 // Handle Edit Post
 async function handleEditPost(postId) {
   const postElement = document.querySelector(`.post[data-id="${postId}"]`);
   const postTitle = postElement.querySelector('h3').textContent;
   const postText = postElement.querySelector('p').textContent;
-  const postTimestamp = postElement.querySelector('small').textContent;
 
-  // Prompt the user for the updated title and content
   const updatedTitle = prompt('Edit your post title:', postTitle);
   const updatedText = prompt('Edit your post content:', postText);
 
   if ((updatedTitle !== null && updatedTitle.trim() !== '') || (updatedText !== null && updatedText.trim() !== '')) {
-    // Ask the user if they want to update the timestamp
-    const updateTimestamp = confirm('Do you want to update the timestamp to the current time?');
-
-    let newTimestamp;
-    if (updateTimestamp) {
-      // Update the timestamp to the current time
-      newTimestamp = new Date().toISOString();
-    } else {
-      // Keep the original timestamp
-      newTimestamp = postTimestamp;
-    }
-
-    // Send the updated data to the server
     const response = await fetch(`/api/posts/${postId}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        title: updatedTitle,
-        text: updatedText,
-        timestamp: newTimestamp, // Send the updated or original timestamp
-      }),
+      body: JSON.stringify({ title: updatedTitle, text: updatedText }),
     });
-
     if (response.ok) {
       fetchPosts(); // Refresh the posts
-    } else {
-      alert('Failed to update the post. Please try again later.');
     }
   }
 }
