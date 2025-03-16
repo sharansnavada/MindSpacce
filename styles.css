@@ -779,3 +779,28 @@ body.dark-mode .post-file:hover {
 #cancel-delete:hover {
   background-color: #0056b3;
 }
+
+/* Add this if you're using @font-face to load SF Pro */
+@font-face {
+  font-family: 'SF Pro';
+  src: url('path/to/SF-Pro.woff2') format('woff2'),
+       url('path/to/SF-Pro.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* Update the post input field */
+#post-input {
+  font-family: 'SF Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  /* Other existing styles */
+  width: 100%;
+  height: 150px;
+  padding: 12px;
+  font-size: 1rem;
+  border: 2px solid #007bff;
+  border-radius: 8px;
+  resize: vertical;
+  margin-bottom: 15px;
+  outline: none;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
