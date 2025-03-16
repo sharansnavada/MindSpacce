@@ -1,5 +1,40 @@
 let isCompactView = false; // Track the current view mode
 
+// Apply saved theme on page load
+document.addEventListener('DOMContentLoaded', () => {
+  const body = document.body;
+  const savedTheme = localStorage.getItem('theme');
+  if (savedTheme) {
+    body.classList.add(savedTheme);
+  }
+
+  // Theme Toggle
+  const themeToggle = document.getElementById('theme-toggle');
+  if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+      body.classList.toggle('dark-mode');
+      const isDarkMode = body.classList.contains('dark-mode');
+      localStorage.setItem('theme', isDarkMode ? 'dark-mode' : ''); // Save theme state
+      updateToggleIcon(isDarkMode ? 'dark-mode' : '');
+    });
+
+    // Update Toggle Icon
+    function updateToggleIcon(theme) {
+      if (theme === 'dark-mode') {
+        themeToggle.textContent = '☀️'; // Sun emoji for light mode
+      } else {
+        themeToggle.textContent = '🌙'; // Moon emoji for dark mode
+      }
+    }
+
+    // Set initial icon
+    updateToggleIcon(savedTheme || '');
+  }
+
+  // Fetch posts when the page loads
+  fetchPosts();
+});
+
 // Toggle View Functionality
 document.getElementById('toggle-view').addEventListener('click', () => {
   isCompactView = !isCompactView; // Toggle the view mode
@@ -135,7 +170,7 @@ function openFullScreenMedia(fileUrl) {
   const fullScreenContainer = document.createElement('div');
   fullScreenContainer.classList.add('full-screen-media');
 
-  const mediaElement = fileUrl.endsWith('.mp4') || fileUrl.endsWith('.webm') || fileUrl.endsWith('.ogg')
+  const mediaElement = fileUrl.endsWith('.mp4') || file.endsWith('.webm') || file.endsWith('.ogg')
     ? `<video controls src="${fileUrl}" class="full-screen-content"></video>`
     : `<img src="${fileUrl}" alt="Full Screen Media" class="full-screen-content">`;
 
@@ -230,9 +265,6 @@ async function highlightText(postId) {
     alert('Please select some text to highlight.');
   }
 }
-
-// Call fetchPosts when the page loads
-fetchPosts();
 
 // Re-arrange posts on window resize (only for grid view)
 window.addEventListener('resize', () => {
