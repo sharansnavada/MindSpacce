@@ -73,14 +73,13 @@ app.post('/api/posts', upload.array('files', 10), (req, res) => {
 app.put('/api/posts/:id', (req, res) => {
   const posts = getPosts();
   const postId = parseInt(req.params.id);
-  const updatedTitle = req.body.title;
-  const updatedText = req.body.text;
+  const { title, text, timestamp } = req.body; // Get the timestamp from the request body
 
   const postIndex = posts.findIndex(post => post.id === postId);
   if (postIndex !== -1) {
-    posts[postIndex].title = updatedTitle;
-    posts[postIndex].text = updatedText;
-    posts[postIndex].timestamp = new Date().toISOString(); // Update timestamp
+    posts[postIndex].title = title;
+    posts[postIndex].text = text;
+    posts[postIndex].timestamp = timestamp; // Use the timestamp sent from the client
     savePosts(posts);
     res.json(posts[postIndex]);
   } else {
