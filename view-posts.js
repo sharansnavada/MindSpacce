@@ -214,18 +214,40 @@ async function handleEditPost(postId) {
   const postElement = document.querySelector(`.post[data-id="${postId}"]`);
   const postTitle = postElement.querySelector('h3').textContent;
   const postText = postElement.querySelector('p').textContent;
+  const postTimestamp = postElement.querySelector('small').textContent;
 
+  // Prompt the user for the updated title and content
   const updatedTitle = prompt('Edit your post title:', postTitle);
   const updatedText = prompt('Edit your post content:', postText);
 
   if ((updatedTitle !== null && updatedTitle.trim() !== '') || (updatedText !== null && updatedText.trim() !== '')) {
+    // Ask the user if they want to update the timestamp
+    const updateTimestamp = confirm('Do you want to update the timestamp to the current time?');
+
+    let newTimestamp;
+    if (updateTimestamp) {
+      // Update the timestamp to the current time
+      newTimestamp = new Date().toISOString();
+    } else {
+      // Keep the original timestamp
+      newTimestamp = postTimestamp;
+    }
+
+    // Send the updated data to the server
     const response = await fetch(`/api/posts/${postId}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ title: updatedTitle, text: updatedText }),
+      body: JSON.stringify({
+        title: updatedTitle,
+        text: updatedText,
+        timestamp: newTimestamp, // Send the updated or original timestamp
+      }),
     });
+
     if (response.ok) {
       fetchPosts(); // Refresh the posts
+    } else {
+      alert('Failed to update the post. Please try again later.');
     }
   }
 }
