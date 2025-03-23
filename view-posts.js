@@ -1,4 +1,4 @@
-let isCompactView = false; // Track the current view mode
+let isCompactView = true; // Track the current view mode
 
 // Apply saved theme on page load
 document.addEventListener('DOMContentLoaded', () => {
