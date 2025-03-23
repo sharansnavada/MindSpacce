@@ -2,7 +2,6 @@
 This project involves in uploding the text, photos, videos and files locally and could be retrived.
 
 ======================================================================================
-======================================================================================
 
 Step 1: Install Node.js
 Download Node.js:
@@ -19,7 +18,8 @@ Run in terminal:
 node -v  # Should show Node.js version (e.g., v18.x.x)
 npm -v   # Should show npm version (e.g., 9.x.x)
 
-======================================================================================
+and you may need to install multer package also for storing Photos, videos or files.
+
 ======================================================================================
 
 Step 2: Create the Project Folder
@@ -35,7 +35,6 @@ public/scripts.js (frontend functionality)
 public/view-post.html (frontend for viewing the code)
 public/view-post.js (frontend functionality for viewing the post)
 
-======================================================================================
 ======================================================================================
 
 Step 3: start the server
